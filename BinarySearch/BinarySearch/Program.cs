@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace BinarySearch
 {
@@ -83,10 +84,14 @@ namespace BinarySearch
 
         static void Main(string[] args)
         {
-            int length = 100, maxItem = 50000;
+            int length = 10_000, maxItem = 9_999;
             int[] data = generateData(length, maxItem);
+
             bubbleSort(data);
+
             printIntArr(data);
+
+
             int x = 0, xIndex;
             Random rand = new Random();
             foreach (int item in data) //test all array items
@@ -94,13 +99,32 @@ namespace BinarySearch
                 xIndex = binarySearch(data, item);
                 Console.WriteLine($"[{item} : {xIndex} !OK!]");
             }
-            for(int i = 0; i < 2000; i++) //test random items
+            for (int i = 0; i < 2000; i++) //test random items
             {
                 x = rand.Next(maxItem);
                 xIndex = binarySearch(data, x);
                 Console.Write($"[{x} : {xIndex} !OK!]");
             }
 
+            while (true)
+            {
+
+                int x0 = Convert.ToInt32(Console.ReadLine());
+
+                var startTime = System.Diagnostics.Stopwatch.StartNew();
+
+                int xIndex0 = binarySearch(data, x0);
+
+                startTime.Stop();
+                var startTimeResult = startTime.Elapsed;
+                var elapsedTime = String.Format("{0:00}:{1:00}:{2:00000}",
+                    startTimeResult.Minutes,
+                    startTimeResult.Seconds,
+                    startTimeResult.Milliseconds
+                );
+                Console.WriteLine($"[{x} : {xIndex0} !OK!]");
+                Console.WriteLine($"For {length}: {elapsedTime}");
+            }
             Console.ReadKey();
         }
     }

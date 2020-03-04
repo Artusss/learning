@@ -1,0 +1,11 @@
+C:\Users\User\source\repos\learning\Sorts\Sorts\bin\Debug\netcoreapp3.1\Sorts.exe
+C:\Users\User\source\repos\learning\Sorts\Sorts\bin\Debug\netcoreapp3.1\Sorts.deps.json
+C:\Users\User\source\repos\learning\Sorts\Sorts\bin\Debug\netcoreapp3.1\Sorts.runtimeconfig.json
+C:\Users\User\source\repos\learning\Sorts\Sorts\bin\Debug\netcoreapp3.1\Sorts.runtimeconfig.dev.json
+C:\Users\User\source\repos\learning\Sorts\Sorts\bin\Debug\netcoreapp3.1\Sorts.dll
+C:\Users\User\source\repos\learning\Sorts\Sorts\bin\Debug\netcoreapp3.1\Sorts.pdb
+C:\Users\User\source\repos\learning\Sorts\Sorts\obj\Debug\netcoreapp3.1\Sorts.csprojAssemblyReference.cache
+C:\Users\User\source\repos\learning\Sorts\Sorts\obj\Debug\netcoreapp3.1\Sorts.AssemblyInfoInputs.cache
+C:\Users\User\source\repos\learning\Sorts\Sorts\obj\Debug\netcoreapp3.1\Sorts.AssemblyInfo.cs
+C:\Users\User\source\repos\learning\Sorts\Sorts\obj\Debug\netcoreapp3.1\Sorts.dll
+C:\Users\User\source\repos\learning\Sorts\Sorts\obj\Debug\netcoreapp3.1\Sorts.pdb
