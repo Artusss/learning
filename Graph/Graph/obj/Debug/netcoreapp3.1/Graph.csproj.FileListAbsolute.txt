@@ -9,3 +9,14 @@ C:\Users\User\source\repos\Graph\Graph\bin\Debug\netcoreapp3.1\Graph.dll
 C:\Users\User\source\repos\Graph\Graph\bin\Debug\netcoreapp3.1\Graph.pdb
 C:\Users\User\source\repos\Graph\Graph\obj\Debug\netcoreapp3.1\Graph.dll
 C:\Users\User\source\repos\Graph\Graph\obj\Debug\netcoreapp3.1\Graph.pdb
+C:\Users\User\source\repos\learning\Graph\Graph\bin\Debug\netcoreapp3.1\Graph.exe
+C:\Users\User\source\repos\learning\Graph\Graph\bin\Debug\netcoreapp3.1\Graph.deps.json
+C:\Users\User\source\repos\learning\Graph\Graph\bin\Debug\netcoreapp3.1\Graph.runtimeconfig.json
+C:\Users\User\source\repos\learning\Graph\Graph\bin\Debug\netcoreapp3.1\Graph.runtimeconfig.dev.json
+C:\Users\User\source\repos\learning\Graph\Graph\bin\Debug\netcoreapp3.1\Graph.dll
+C:\Users\User\source\repos\learning\Graph\Graph\bin\Debug\netcoreapp3.1\Graph.pdb
+C:\Users\User\source\repos\learning\Graph\Graph\obj\Debug\netcoreapp3.1\Graph.csprojAssemblyReference.cache
+C:\Users\User\source\repos\learning\Graph\Graph\obj\Debug\netcoreapp3.1\Graph.AssemblyInfoInputs.cache
+C:\Users\User\source\repos\learning\Graph\Graph\obj\Debug\netcoreapp3.1\Graph.AssemblyInfo.cs
+C:\Users\User\source\repos\learning\Graph\Graph\obj\Debug\netcoreapp3.1\Graph.dll
+C:\Users\User\source\repos\learning\Graph\Graph\obj\Debug\netcoreapp3.1\Graph.pdb

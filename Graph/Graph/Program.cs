@@ -103,80 +103,36 @@ namespace Graph
 
                 Graph<String> graph = new Graph<string>();
 
-                Console.WriteLine("elem1_234");
-                graph.InsertElement("elem1_234");              
+                Dictionary<String, List<String>> graphElements = new Dictionary<String, List<String>>();
+                graphElements["Me"] = new List<String>() { "Bob", "Klare", "Alice" };
+                graphElements["Bob"] = new List<String>() { "Anudzh", "Paggy" };
+                graphElements["Alice"] = new List<String>() { "Paggy" };
+                graphElements["Klare"] = new List<String>() { "Tom", "John" };
+                graphElements["Anudzh"] = new List<String>();
+                graphElements["Paggy"] = new List<String>();
+                graphElements["Tom"] = new List<String>();
+                graphElements["John"] = new List<String>();
 
-                Console.WriteLine("elem2_156");
-                graph.InsertElement("elem2_156");                
-
-                Console.WriteLine("elem3_156");
-                graph.InsertElement("elem3_156");
-                
-                Console.WriteLine("elem4_1");
-                graph.InsertElement("elem4_1");
-                
-                Console.WriteLine("elem5_236");
-                graph.InsertElement("elem5_236");
-                
-                Console.WriteLine("elem6_235");
-                graph.InsertElement("elem6_235");
-
-                graph.InsertNodes("elem1_234", new List<String>() {
-                    "elem2_156", "elem3_156", "elem4_1"
-                });
-                graph.InsertNodes("elem2_156", new List<String>() {
-                    "elem5_236", "elem6_235"
-                });
-                graph.InsertNodes("elem3_156", new List<String>() {
-                    "elem5_236", "elem6_235"
-                });      
-                graph.InsertNodes("elem5_236", new List<String>() {
-                    "elem6_235"
-                });
-
-                List<String> elem2_156Nodes = graph.SelectNodes("elem2_156");
-                Console.WriteLine("For: elem2_156");
-                foreach (String RelationEelement in elem2_156Nodes)
+                foreach (var graphElement in graphElements)
                 {
-                    Console.WriteLine($"{RelationEelement} ;");
+                    graph.InsertElement(graphElement.Key);
+                }
+                foreach (var graphElement in graphElements)
+                {
+                    if (graphElement.Value.Count > 0)
+                    {
+                        graph.InsertNodes(graphElement.Key, graphElement.Value);
+                    }                    
                 }
 
-                List<String> elem4_1Nodes = graph.SelectNodes("elem4_1");
-                Console.WriteLine("For: elem4_1");
-                foreach (String RelationEelement in elem4_1Nodes)
+                foreach (var graphElement in graphElements)
                 {
-                    Console.WriteLine($"{RelationEelement} ;");
-                }
-
-                List<String> elem5_236Nodes = graph.SelectNodes("elem5_236");
-                Console.WriteLine("For: elem5_236");
-                foreach (String RelationEelement in elem5_236Nodes)
-                {
-                    Console.WriteLine($"{RelationEelement} ;");
-                }
-
-                Console.WriteLine(graph.GetCount());
-                graph.FlushElement("elem6_235");                
-
-                elem2_156Nodes = graph.SelectNodes("elem2_156");
-                Console.WriteLine("For: elem2_156");
-                foreach (String RelationEelement in elem2_156Nodes)
-                {
-                    Console.WriteLine($"{RelationEelement} ;");
-                }
-
-                elem4_1Nodes = graph.SelectNodes("elem4_1");
-                Console.WriteLine("For: elem4_1");
-                foreach (String RelationEelement in elem4_1Nodes)
-                {
-                    Console.WriteLine($"{RelationEelement} ;");
-                }
-
-                elem5_236Nodes = graph.SelectNodes("elem5_236");
-                Console.WriteLine("For: elem5_236");
-                foreach (String RelationEelement in elem5_236Nodes)
-                {
-                    Console.WriteLine($"{RelationEelement} ;");
+                    List<String> Nodes = graph.SelectNodes(graphElement.Key);
+                    Console.WriteLine($"For: {graphElement.Key}");
+                    foreach (String RelationEelement in Nodes)
+                    {
+                        Console.WriteLine($"{RelationEelement};");
+                    }
                 }
 
                 Console.WriteLine(graph.GetCount());

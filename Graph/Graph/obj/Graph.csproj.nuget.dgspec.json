@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\User\\source\\repos\\Graph\\Graph\\Graph.csproj": {}
+    "C:\\Users\\User\\source\\repos\\learning\\Graph\\Graph\\Graph.csproj": {}
   },
   "projects": {
-    "C:\\Users\\User\\source\\repos\\Graph\\Graph\\Graph.csproj": {
+    "C:\\Users\\User\\source\\repos\\learning\\Graph\\Graph\\Graph.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\User\\source\\repos\\Graph\\Graph\\Graph.csproj",
+        "projectUniqueName": "C:\\Users\\User\\source\\repos\\learning\\Graph\\Graph\\Graph.csproj",
         "projectName": "Graph",
-        "projectPath": "C:\\Users\\User\\source\\repos\\Graph\\Graph\\Graph.csproj",
+        "projectPath": "C:\\Users\\User\\source\\repos\\learning\\Graph\\Graph\\Graph.csproj",
         "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\User\\source\\repos\\Graph\\Graph\\obj\\",
+        "outputPath": "C:\\Users\\User\\source\\repos\\learning\\Graph\\Graph\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\User\\AppData\\Roaming\\NuGet\\NuGet.Config",
