@@ -10,6 +10,49 @@ namespace Graph
 {
     class Program
     {        
+        public static bool widthSearch(string MainItem, string SearchedItem, Graph.Graph<string> graph)
+        {
+            if (graph.SelectNodes(MainItem) == null)
+            {
+                throw new Exception("Main element not found");
+            }
+
+            int count = 0;
+
+            List<string> searchedList = new List<string>();
+
+            Queue<string> queue = new Queue<string>();
+            foreach (string graphElement in graph.SelectNodes(MainItem))
+            {
+                queue.Enqueue(graphElement);
+            }
+
+            while (queue.Count != 0)
+            {
+                string queueItem = queue.Dequeue();
+
+                if (!searchedList.Contains(queueItem))
+                {
+                    if (searchValidator(queueItem, SearchedItem)) return true;
+                    else
+                    {
+                        searchedList.Add(queueItem);
+                        foreach (string graphElement in graph.SelectNodes(queueItem))
+                        {
+                            queue.Enqueue(graphElement);
+                        }
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        public static bool searchValidator(string SearchedItem, string ValidItem)
+        {
+            return SearchedItem.Equals(ValidItem);
+        } 
+
         static void Main(string[] args)
         {
             try
@@ -47,7 +90,11 @@ namespace Graph
                         Console.WriteLine($"{RelationEelement};");
                     }
                 }
-
+                Console.WriteLine(widthSearch("Me", "Bob", graph));
+                Console.WriteLine(widthSearch("Me", "aedaeae", graph));
+                Console.WriteLine(widthSearch("Me", "Paggy", graph));
+                Console.WriteLine(widthSearch("Me", "Tom", graph));
+                Console.WriteLine(widthSearch("Me", "qweert", graph));
                 Console.WriteLine(graph.GetCount());
             }
             catch (Exception e)
