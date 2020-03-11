@@ -10,7 +10,7 @@ namespace Graph
 {
     class Program
     {
-        public static string widthSearch(string MainItem, Graph.Graph<string> graph)
+        public static string widthSearch(string MainItem, Graph<string> graph)
         {
             if (graph.SelectNodes(MainItem) == null)
             {
@@ -94,6 +94,49 @@ namespace Graph
             catch (Exception e)
             {
                 Console.WriteLine(e.ToString());
+            }
+
+            try
+            {
+                WeightedGraph<string> wGraph = new WeightedGraph<string>();
+                Dictionary<string, Dictionary<int, string>> wGraphElements = new Dictionary<string, Dictionary<int, string>>();
+                wGraphElements["TwinPicks"] = new Dictionary<int, string>(){ { 4, "TP_GG_0_0" }, { 10, "TP_GG_1_0" } };
+                wGraphElements["TP_GG_0_0"] = new Dictionary<int, string>(){ { 21, "TP_GG_0_1" } };
+                wGraphElements["TP_GG_1_0"] = new Dictionary<int, string>(){ { 5, "TP_GG_1_1" }, { 8, "TP_GG_1_2" } };
+                wGraphElements["TP_GG_1_1"] = new Dictionary<int, string>(){ { 5, "TP_GG_0_1" } };
+                wGraphElements["TP_GG_1_2"] = new Dictionary<int, string>(){ { 12, "TP_GG_0_1" } };
+                wGraphElements["TP_GG_0_1"] = new Dictionary<int, string>(){ { 4, "GoldenGate" } };
+
+                foreach (var wGraphElement in wGraphElements)
+                {
+                    wGraph.InsertElement(wGraphElement.Key);
+                }
+                foreach (var wGraphElement in wGraphElements)
+                {
+                    if (wGraphElement.Value.Count > 0)
+                    {
+                        wGraph.InsertNodes(wGraphElement.Key, wGraphElement.Value);
+                    }
+                }
+
+                foreach (var wGraphElement in wGraphElements)
+                {
+                    Dictionary<int, string> Nodes = wGraph.SelectNodes(wGraphElement.Key);
+                    Console.WriteLine($"For: {wGraphElement.Key}");
+                    foreach (var RelationEelement in Nodes)
+                    {
+                        Console.WriteLine($"{wGraphElement.Key}---{RelationEelement.Key}min-->{RelationEelement.Value};");
+                    }
+                }
+
+            }
+            catch(GraphException ge)
+            {
+                Console.WriteLine(ge.ToString());
+            }
+            finally
+            {
+                Console.WriteLine("OK");
             }
             Console.ReadKey();            
         }
