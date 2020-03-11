@@ -48,7 +48,7 @@ namespace Graph
 
         public static bool searchValidator(string SearchedItem)
         {
-            return SearchedItem[0].Equals("J".ToString());
+            return SearchedItem[0].Equals('J');
         }
 
         static void Main(string[] args)
