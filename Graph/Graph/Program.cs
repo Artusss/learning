@@ -9,35 +9,33 @@ using Graph;
 namespace Graph
 {
     class Program
-    {        
-        public static bool widthSearch(string MainItem, string SearchedItem, Graph.Graph<string> graph)
+    {
+        public static bool widthSearch<T>(T MainItem, T SearchedItem, Graph.Graph<T> graph)
         {
             if (graph.SelectNodes(MainItem) == null)
             {
                 throw new Exception("Main element not found");
             }
 
-            int count = 0;
+            List<T> searchedList = new List<T>();
 
-            List<string> searchedList = new List<string>();
-
-            Queue<string> queue = new Queue<string>();
-            foreach (string graphElement in graph.SelectNodes(MainItem))
+            Queue<T> queue = new Queue<T>();
+            foreach (T graphElement in graph.SelectNodes(MainItem))
             {
                 queue.Enqueue(graphElement);
             }
 
             while (queue.Count != 0)
             {
-                string queueItem = queue.Dequeue();
+                T queueItem = queue.Dequeue();
 
                 if (!searchedList.Contains(queueItem))
                 {
-                    if (searchValidator(queueItem, SearchedItem)) return true;
+                    if (searchValidator<T>(queueItem, SearchedItem)) return true;
                     else
                     {
                         searchedList.Add(queueItem);
-                        foreach (string graphElement in graph.SelectNodes(queueItem))
+                        foreach (T graphElement in graph.SelectNodes(queueItem))
                         {
                             queue.Enqueue(graphElement);
                         }
@@ -48,7 +46,7 @@ namespace Graph
             return false;
         }
 
-        public static bool searchValidator(string SearchedItem, string ValidItem)
+        public static bool searchValidator<T>(T SearchedItem, T ValidItem)
         {
             return SearchedItem.Equals(ValidItem);
         } 
@@ -90,11 +88,11 @@ namespace Graph
                         Console.WriteLine($"{RelationEelement};");
                     }
                 }
-                Console.WriteLine(widthSearch("Me", "Bob", graph));
-                Console.WriteLine(widthSearch("Me", "aedaeae", graph));
-                Console.WriteLine(widthSearch("Me", "Paggy", graph));
-                Console.WriteLine(widthSearch("Me", "Tom", graph));
-                Console.WriteLine(widthSearch("Me", "qweert", graph));
+                Console.WriteLine(widthSearch<string>("Me", "Bob", graph));
+                Console.WriteLine(widthSearch<string>("Me", "aedaeae", graph));
+                Console.WriteLine(widthSearch<string>("Me", "Paggy", graph));
+                Console.WriteLine(widthSearch<string>("Me", "Tom", graph));
+                Console.WriteLine(widthSearch<string>("Me", "qweert", graph));
                 Console.WriteLine(graph.GetCount());
             }
             catch (Exception e)

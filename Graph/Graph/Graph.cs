@@ -5,7 +5,23 @@ using System.Linq;
 
 namespace Graph
 {
-    class Graph<T>
+    interface ICounter
+    {
+        public int GetCount();
+    }
+    abstract class BaseGraph<T>
+    {
+        public abstract void InsertElement(T Element);
+
+        public abstract void InsertNodes(T Element, List<T> RelationList);
+
+        public abstract void FlushElement(T Element);
+
+        public abstract List<T> SelectNodes(T Element);
+
+        public abstract List<T> SelectAll();
+    }
+    class Graph<T> : BaseGraph<T>, ICounter
     {
         private Dictionary<T, List<T>> GraphStruct;
 
@@ -14,7 +30,7 @@ namespace Graph
             this.GraphStruct = new Dictionary<T, List<T>>();
         }
 
-        public void InsertElement(T Element)
+        public override void InsertElement(T Element)
         {
             if (this.GraphStruct.ContainsKey(Element))
             {
@@ -23,7 +39,7 @@ namespace Graph
             this.GraphStruct.Add(Element, new List<T>());
         }
 
-        public void InsertNodes(T Element, List<T> RelationList)
+        public override void InsertNodes(T Element, List<T> RelationList)
         {
             if (RelationList.Count == 0)
             {
@@ -55,7 +71,7 @@ namespace Graph
             }
         }
 
-        public void FlushElement(T Element)
+        public override void FlushElement(T Element)
         {
             if (!this.GraphStruct.ContainsKey(Element))
             {
@@ -68,7 +84,7 @@ namespace Graph
             this.GraphStruct.Remove(Element);
         }
 
-        public List<T> SelectNodes(T Element)
+        public override List<T> SelectNodes(T Element)
         {
             if (!this.GraphStruct.ContainsKey(Element))
             {
@@ -77,7 +93,7 @@ namespace Graph
             return this.GraphStruct[Element];
         }
 
-        public List<T> SelectAll()
+        public override List<T> SelectAll()
         {
             if (this.GraphStruct.Count == 0)
             {
