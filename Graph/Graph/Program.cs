@@ -10,6 +10,43 @@ namespace Graph
 {
     class Program
     {
+        public static int DijkstraAlg<T>(T fromElement, T toElement, WeightedGraph<T> wGraph)
+        {
+            if (wGraph.SelectNodes(fromElement) == null)
+            {
+                throw new GraphException("FromElement not found");
+            }
+            if (wGraph.SelectNodes(toElement) == null)
+            {
+                throw new GraphException("ToElement not found");
+            }
+
+            var minCostNodes = wGraph.SelectNodes(fromElement);
+
+            Dictionary<T, int> verifiedNodes = new Dictionary<T, int>();
+
+            while (verifiedNodes.Count < wGraph.GetCount())
+            {
+                var minCostNode = minCostNodes.First();
+                foreach (var currentNode in minCostNodes)
+                {
+                    if (verifiedNodes.ContainsKey(currentNode.Value))
+                    {
+                        int comparingCost = minCostNode.Key + currentNode.Key;
+                        if (verifiedNodes[currentNode.Value] > comparingCost)
+                        {
+                            verifiedNodes[currentNode.Value] = comparingCost;
+                        }
+                    }
+                    else verifiedNodes.Add(currentNode.Value, currentNode.Key);
+
+                    if (currentNode.Key < minCostNode.Key) minCostNode = currentNode;
+                }
+                minCostNodes = wGraph.SelectNodes(minCostNode.Value);
+            }
+
+            return verifiedNodes[toElement];
+        }
         public static string widthSearch(string MainItem, Graph<string> graph)
         {
             if (graph.SelectNodes(MainItem) == null)
