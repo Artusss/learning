@@ -10,7 +10,7 @@ namespace Graph
 {
     class Program
     {
-        public static int DijkstraAlg<T>(T fromElement, T toElement, WeightedGraph<T> wGraph)
+        public static Dictionary<T, int> DijkstraAlg<T>(T fromElement, T toElement, WeightedGraph<T> wGraph)
         {
             if (wGraph.SelectNodes(fromElement) == null)
             {
@@ -23,10 +23,10 @@ namespace Graph
 
             Dictionary<T, int> CostNodes = new Dictionary<T, int>();
             Dictionary<T, T> ParentNodes = new Dictionary<T, T>();
-            List<T> verifiedNodes = new List<T>();
+            List<T> VerifiedNodes = new List<T>();
             foreach (var Node in wGraph.SelectAll())
             {
-                CostNodes.Add(Node, 0);
+                CostNodes.Add(Node, int.MaxValue);
                 ParentNodes.Add(Node, default);
             }
             foreach (var Node in wGraph.SelectNodes(fromElement))
@@ -34,35 +34,40 @@ namespace Graph
                 CostNodes.Add(Node.Value, Node.Key);
                 ParentNodes.Add(Node.Value, fromElement);
             }
+            
+            T CurNode = findLowCostNode<T>(CostNodes, VerifiedNodes);
+            while (VerifiedNodes.Count < wGraph.GetCount())
+            {
+                int CurCost = CostNodes[CurNode];
+                var CurNeighbors = wGraph.SelectNodes(CurNode);
+                foreach (T CurNeighbor in CurNeighbors.Values)
+                {
+                    int newCost = CurCost + CurNeighbors.SingleOrDefault(i => i.Value.Equals(CurNeighbor)).Key;
+                    if (CostNodes[CurNeighbor] > newCost)
+                    {
+                        CostNodes[CurNeighbor] = newCost;
+                        ParentNodes[CurNeighbor] = CurNode;
+                    }
+                }
+                VerifiedNodes.Add(CurNode);
+                CurNode = findLowCostNode<T>(CostNodes, VerifiedNodes);
+            }
 
-
-
-            /*
-                        var minCostNodes = wGraph.SelectNodes(fromElement);
-
-                        Dictionary<T, int> verifiedNodes = new Dictionary<T, int>();
-
-                        while (verifiedNodes.Count < wGraph.GetCount())
-                        {
-                            var minCostNode = minCostNodes.First();
-                            foreach (var currentNode in minCostNodes)
-                            {
-                                if (verifiedNodes.ContainsKey(currentNode.Value))
-                                {
-                                    int comparingCost = minCostNode.Key + currentNode.Key;
-                                    if (verifiedNodes[currentNode.Value] > comparingCost)
-                                    {
-                                        verifiedNodes[currentNode.Value] = comparingCost;
-                                    }
-                                }
-                                else verifiedNodes.Add(currentNode.Value, currentNode.Key);
-
-                                if (currentNode.Key < minCostNode.Key) minCostNode = currentNode;
-                            }
-                            minCostNodes = wGraph.SelectNodes(minCostNode.Value);
-                        }
-            */
-            return verifiedNodes[toElement];
+            return CostNodes;
+        }
+        private static T findLowCostNode<T>(Dictionary<T, int> CostNodes, List<T> VerifiedNodes)
+        {
+            int LowCost = int.MaxValue;
+            T LowCostNode = default;
+            foreach (var CostNode in CostNodes)
+            {
+                if (CostNode.Value < LowCost && !VerifiedNodes.Contains(CostNode.Key)) 
+                {
+                    LowCost = CostNode.Value;
+                    LowCostNode = CostNode.Key;
+                }
+            }
+            return LowCostNode;
         }
         public static string widthSearch(string MainItem, Graph<string> graph)
         {
