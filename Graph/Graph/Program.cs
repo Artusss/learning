@@ -21,30 +21,47 @@ namespace Graph
                 throw new GraphException("ToElement not found");
             }
 
-            var minCostNodes = wGraph.SelectNodes(fromElement);
-
-            Dictionary<T, int> verifiedNodes = new Dictionary<T, int>();
-
-            while (verifiedNodes.Count < wGraph.GetCount())
+            Dictionary<T, int> CostNodes = new Dictionary<T, int>();
+            Dictionary<T, T> ParentNodes = new Dictionary<T, T>();
+            List<T> verifiedNodes = new List<T>();
+            foreach (var Node in wGraph.SelectAll())
             {
-                var minCostNode = minCostNodes.First();
-                foreach (var currentNode in minCostNodes)
-                {
-                    if (verifiedNodes.ContainsKey(currentNode.Value))
-                    {
-                        int comparingCost = minCostNode.Key + currentNode.Key;
-                        if (verifiedNodes[currentNode.Value] > comparingCost)
-                        {
-                            verifiedNodes[currentNode.Value] = comparingCost;
-                        }
-                    }
-                    else verifiedNodes.Add(currentNode.Value, currentNode.Key);
-
-                    if (currentNode.Key < minCostNode.Key) minCostNode = currentNode;
-                }
-                minCostNodes = wGraph.SelectNodes(minCostNode.Value);
+                CostNodes.Add(Node, 0);
+                ParentNodes.Add(Node, default);
+            }
+            foreach (var Node in wGraph.SelectNodes(fromElement))
+            {
+                CostNodes.Add(Node.Value, Node.Key);
+                ParentNodes.Add(Node.Value, fromElement);
             }
 
+
+
+            /*
+                        var minCostNodes = wGraph.SelectNodes(fromElement);
+
+                        Dictionary<T, int> verifiedNodes = new Dictionary<T, int>();
+
+                        while (verifiedNodes.Count < wGraph.GetCount())
+                        {
+                            var minCostNode = minCostNodes.First();
+                            foreach (var currentNode in minCostNodes)
+                            {
+                                if (verifiedNodes.ContainsKey(currentNode.Value))
+                                {
+                                    int comparingCost = minCostNode.Key + currentNode.Key;
+                                    if (verifiedNodes[currentNode.Value] > comparingCost)
+                                    {
+                                        verifiedNodes[currentNode.Value] = comparingCost;
+                                    }
+                                }
+                                else verifiedNodes.Add(currentNode.Value, currentNode.Key);
+
+                                if (currentNode.Key < minCostNode.Key) minCostNode = currentNode;
+                            }
+                            minCostNodes = wGraph.SelectNodes(minCostNode.Value);
+                        }
+            */
             return verifiedNodes[toElement];
         }
         public static string widthSearch(string MainItem, Graph<string> graph)
