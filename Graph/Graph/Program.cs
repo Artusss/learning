@@ -10,7 +10,7 @@ namespace Graph
 {
     class Program
     {
-        public static Dictionary<T, int> DijkstraAlg<T>(T fromElement, T toElement, WeightedGraph<T> wGraph)
+        public static Dictionary<int, List<T>> DijkstraAlg<T>(T fromElement, T toElement, WeightedGraph<T> wGraph)
         {
             if (wGraph.SelectNodes(fromElement) == null)
             {
@@ -29,31 +29,50 @@ namespace Graph
                 CostNodes.Add(Node, int.MaxValue);
                 ParentNodes.Add(Node, default);
             }
+            CostNodes[fromElement] = 0;
             foreach (var Node in wGraph.SelectNodes(fromElement))
             {
-                CostNodes.Add(Node.Value, Node.Key);
-                ParentNodes.Add(Node.Value, fromElement);
+                CostNodes[Node.Value] = Node.Key;
+                ParentNodes[Node.Value] = fromElement;
             }
             
             T CurNode = findLowCostNode<T>(CostNodes, VerifiedNodes);
             while (VerifiedNodes.Count < wGraph.GetCount())
             {
-                int CurCost = CostNodes[CurNode];
-                var CurNeighbors = wGraph.SelectNodes(CurNode);
-                foreach (T CurNeighbor in CurNeighbors.Values)
+                if (CurNode != null)
                 {
-                    int newCost = CurCost + CurNeighbors.SingleOrDefault(i => i.Value.Equals(CurNeighbor)).Key;
-                    if (CostNodes[CurNeighbor] > newCost)
+                    int CurCost = CostNodes[CurNode];
+                    var CurNeighbors = wGraph.SelectNodes(CurNode);
+                    foreach (T CurNeighbor in CurNeighbors.Values)
                     {
-                        CostNodes[CurNeighbor] = newCost;
-                        ParentNodes[CurNeighbor] = CurNode;
+                        int newCost = CurCost + CurNeighbors.SingleOrDefault(i => i.Value.Equals(CurNeighbor)).Key;
+                        if (CostNodes[CurNeighbor] > newCost)
+                        {
+                            CostNodes[CurNeighbor] = newCost;
+                            ParentNodes[CurNeighbor] = CurNode;
+                        }
                     }
+                    VerifiedNodes.Add(CurNode);
+                    CurNode = findLowCostNode<T>(CostNodes, VerifiedNodes);
+
                 }
-                VerifiedNodes.Add(CurNode);
-                CurNode = findLowCostNode<T>(CostNodes, VerifiedNodes);
+                else break;
             }
 
-            return CostNodes;
+            Dictionary<int, List<T>> FullPath = new Dictionary<int, List<T>>();
+            FullPath.Add(CostNodes[toElement], new List<T>());
+            FullPath[CostNodes[toElement]].Add(toElement);
+
+            T CurParentNode = ParentNodes[toElement];
+            while (!CurParentNode.Equals(fromElement))
+            {
+                FullPath[CostNodes[toElement]].Add(CurParentNode);
+                CurParentNode = ParentNodes[CurParentNode];
+            }
+            FullPath[CostNodes[toElement]].Add(fromElement);
+            FullPath[CostNodes[toElement]].Reverse();
+
+            return FullPath;
         }
         private static T findLowCostNode<T>(Dictionary<T, int> CostNodes, List<T> VerifiedNodes)
         {
@@ -61,14 +80,19 @@ namespace Graph
             T LowCostNode = default;
             foreach (var CostNode in CostNodes)
             {
-                if (CostNode.Value < LowCost && !VerifiedNodes.Contains(CostNode.Key)) 
+                if (CostNode.Value != int.MaxValue)
                 {
-                    LowCost = CostNode.Value;
-                    LowCostNode = CostNode.Key;
+                    if (CostNode.Value < LowCost && !VerifiedNodes.Contains(CostNode.Key))
+                    {
+                        LowCost = CostNode.Value;
+                        LowCostNode = CostNode.Key;
+                    }
                 }
             }
             return LowCostNode;
         }
+
+
         public static string widthSearch(string MainItem, Graph<string> graph)
         {
             if (graph.SelectNodes(MainItem) == null)
@@ -159,12 +183,13 @@ namespace Graph
             {
                 WeightedGraph<string> wGraph = new WeightedGraph<string>();
                 Dictionary<string, Dictionary<int, string>> wGraphElements = new Dictionary<string, Dictionary<int, string>>();
-                wGraphElements["TwinPicks"] = new Dictionary<int, string>(){ { 4, "TP_GG_0_0" }, { 10, "TP_GG_1_0" } };
-                wGraphElements["TP_GG_0_0"] = new Dictionary<int, string>(){ { 21, "TP_GG_0_1" } };
-                wGraphElements["TP_GG_1_0"] = new Dictionary<int, string>(){ { 5, "TP_GG_1_1" }, { 8, "TP_GG_1_2" } };
-                wGraphElements["TP_GG_1_1"] = new Dictionary<int, string>(){ { 5, "TP_GG_0_1" } };
-                wGraphElements["TP_GG_1_2"] = new Dictionary<int, string>(){ { 12, "TP_GG_0_1" } };
-                wGraphElements["TP_GG_0_1"] = new Dictionary<int, string>(){ { 4, "GoldenGate" } };
+                wGraphElements["TwinPicks"]  = new Dictionary<int, string>(){ { 4, "TP_GG_0_0" }, { 10, "TP_GG_1_0" } };
+                wGraphElements["TP_GG_0_0"]  = new Dictionary<int, string>(){ { 21, "TP_GG_0_1" } };
+                wGraphElements["TP_GG_1_0"]  = new Dictionary<int, string>(){ { 5, "TP_GG_1_1" }, { 8, "TP_GG_1_2" } };
+                wGraphElements["TP_GG_1_1"]  = new Dictionary<int, string>(){ { 5, "TP_GG_0_1" } };
+                wGraphElements["TP_GG_1_2"]  = new Dictionary<int, string>(){ { 12, "TP_GG_0_1" } };
+                wGraphElements["TP_GG_0_1"]  = new Dictionary<int, string>(){ { 4, "GoldenGate" } };
+                wGraphElements["GoldenGate"] = new Dictionary<int, string>();
 
                 foreach (var wGraphElement in wGraphElements)
                 {
@@ -188,6 +213,15 @@ namespace Graph
                     }
                 }
 
+                var FullPath = DijkstraAlg<string>("TwinPicks", "GoldenGate", wGraph);
+                int TotalCost = FullPath.First().Key;
+                Console.WriteLine($"TotalCost: {TotalCost}");
+                foreach(var RouteNode in FullPath.First().Value)
+                {
+                    Console.Write($"{RouteNode}");
+                    if (!RouteNode.Equals("GoldenGate")) Console.Write($" ---> ");
+                }
+                Console.WriteLine();
             }
             catch(GraphException ge)
             {
