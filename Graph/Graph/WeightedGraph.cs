@@ -14,7 +14,7 @@ namespace Graph
         public GraphException(string message, Exception inner) : base(message, inner) 
         { }
     }
-    class WeightedGraph<T> : ICounter
+    class WeightedGraph<T> : BaseGraph<T>, ICounter
     {
         private Dictionary<T, Dictionary<int, T>> GraphStruct;
 

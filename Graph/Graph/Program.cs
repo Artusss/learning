@@ -10,6 +10,42 @@ namespace Graph
 {
     class Program
     {
+        delegate Dictionary<int, List<T>> SearchGraphHandler<T>(T fromElement, T toElement, Graph<T> graph);
+        delegate Dictionary<int, List<T>> SearchWGraphHandler<T>(T fromElement, T toElement, WeightedGraph<T> graph);
+
+        public static void ShowShortestRoute<T>(T fromElement, T toElement, BaseGraph<T> graph)
+        {
+            Dictionary<int, List<T>> FullPath;
+            int TotalCost;
+            if (graph.GetType().Equals(typeof(Graph<T>)))
+            {
+                SearchGraphHandler<T> searchGraphHandler;
+                searchGraphHandler = widthSearch<T>;
+                FullPath = searchGraphHandler(fromElement, toElement, (Graph<T>)graph);
+                TotalCost = FullPath.First().Key;
+                ShowRouteInfo<T>(FullPath, TotalCost);
+            }
+            else if (graph.GetType().Equals(typeof(WeightedGraph<T>)))
+            {
+                SearchWGraphHandler<T> searchWGraphHandler;
+                searchWGraphHandler = DijkstraAlg<T>;
+                FullPath = searchWGraphHandler(fromElement, toElement, (WeightedGraph<T>)graph);
+                TotalCost = FullPath.First().Key;
+                ShowRouteInfo<T>(FullPath, TotalCost);
+            }
+        }
+
+        private static void ShowRouteInfo<T>(Dictionary<int, List<T>> FullPath, int TotalCost)
+        {
+            Console.WriteLine($"TotalCost: {TotalCost}");
+            foreach (var RouteNode in FullPath.First().Value)
+            {
+                Console.Write($"{RouteNode}");
+                if (!RouteNode.Equals(FullPath.First().Value.Last())) Console.Write(" ---> ");
+            }
+            Console.WriteLine();
+        }
+
         public static Dictionary<int, List<T>> DijkstraAlg<T>(T fromElement, T toElement, WeightedGraph<T> wGraph)
         {
             if (wGraph.SelectNodes(fromElement) == null) throw new GraphException("FromElement not found");
@@ -84,11 +120,11 @@ namespace Graph
         }
 
 
-        public static List<T> widthSearch<T>(T MainItem, T ToSearchItem, Graph<T> graph)
+        public static Dictionary<int, List<T>> widthSearch<T>(T MainItem, T ToSearchItem, Graph<T> graph)
         {
             if (graph.SelectNodes(MainItem) == null)     throw new GraphException("Main element not found");
             if (graph.SelectNodes(ToSearchItem) == null) throw new GraphException("ToSearch element not found");
-            if (MainItem.Equals(ToSearchItem))           return new List<T>() { MainItem };
+            if (MainItem.Equals(ToSearchItem))           return new Dictionary<int, List<T>>() { { 0, new List<T>() { MainItem } } };
 
             List<T> searchedList         = new List<T>();
             Queue<T> queue               = new Queue<T>();
@@ -132,7 +168,7 @@ namespace Graph
             FullPath.Add(MainItem);
             FullPath.Reverse();
 
-            return FullPath;
+            return new Dictionary<int, List<T>>() { { FullPath.Count() - 1, FullPath } };
         }
 
         public static bool searchValidator<T>(T SearchedItem, T ToSearchItem)
@@ -169,16 +205,7 @@ namespace Graph
                     Console.WriteLine($"For: {graphElement.Key}");
                     foreach (String RelationEelement in Nodes) Console.WriteLine($"{RelationEelement};");
                 }
-
-                var FullPath = widthSearch<string>("Bob", "John", graph);
-                int TotalCost = FullPath.Count() - 1;
-                Console.WriteLine($"TotalCost: {TotalCost}");
-                foreach (var RouteNode in FullPath)
-                {
-                    Console.Write($"{RouteNode}");
-                    if (!RouteNode.Equals("John")) Console.Write($" ---> ");
-                }
-                Console.WriteLine();
+                ShowShortestRoute<string>("Bob", "John", graph);
             }
             catch (GraphException e)
             {
@@ -215,16 +242,7 @@ namespace Graph
                     Console.WriteLine($"For: {wGraphElement.Key}");
                     foreach (var RelationEelement in Nodes) Console.WriteLine($"{wGraphElement.Key}---{RelationEelement.Key}min-->{RelationEelement.Value};");
                 }
-
-                var FullPath = DijkstraAlg<string>("TwinPicks", "GoldenGate", wGraph);
-                int TotalCost = FullPath.First().Key;
-                Console.WriteLine($"TotalCost: {TotalCost}");
-                foreach(var RouteNode in FullPath.First().Value)
-                {
-                    Console.Write($"{RouteNode}");
-                    if (!RouteNode.Equals("GoldenGate")) Console.Write($" ---> ");
-                }
-                Console.WriteLine();
+                ShowShortestRoute<string>("TwinPicks", "GoldenGate", wGraph);
             }
             catch(GraphException ge)
             {
