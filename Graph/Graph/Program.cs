@@ -12,27 +12,23 @@ namespace Graph
     {
         public static Dictionary<int, List<T>> DijkstraAlg<T>(T fromElement, T toElement, WeightedGraph<T> wGraph)
         {
-            if (wGraph.SelectNodes(fromElement) == null)
-            {
-                throw new GraphException("FromElement not found");
-            }
-            if (wGraph.SelectNodes(toElement) == null)
-            {
-                throw new GraphException("ToElement not found");
-            }
+            if (wGraph.SelectNodes(fromElement) == null) throw new GraphException("FromElement not found");
+            if (wGraph.SelectNodes(toElement) == null)   throw new GraphException("ToElement not found");
 
-            Dictionary<T, int> CostNodes = new Dictionary<T, int>();
-            Dictionary<T, T> ParentNodes = new Dictionary<T, T>();
-            List<T> VerifiedNodes = new List<T>();
+            Dictionary<T, int> CostNodes      = new Dictionary<T, int>();
+            Dictionary<T, T> ParentNodes      = new Dictionary<T, T>();
+            List<T> VerifiedNodes             = new List<T>();
+            Dictionary<int, List<T>> FullPath = new Dictionary<int, List<T>>();
+
             foreach (var Node in wGraph.SelectAll())
             {
-                CostNodes.Add(Node, int.MaxValue);
+                CostNodes  .Add(Node, int.MaxValue);
                 ParentNodes.Add(Node, default);
             }
             CostNodes[fromElement] = 0;
             foreach (var Node in wGraph.SelectNodes(fromElement))
             {
-                CostNodes[Node.Value] = Node.Key;
+                CostNodes[Node.Value]   = Node.Key;
                 ParentNodes[Node.Value] = fromElement;
             }
             
@@ -41,25 +37,23 @@ namespace Graph
             {
                 if (CurNode != null)
                 {
-                    int CurCost = CostNodes[CurNode];
+                    int CurCost      = CostNodes[CurNode];
                     var CurNeighbors = wGraph.SelectNodes(CurNode);
                     foreach (T CurNeighbor in CurNeighbors.Values)
                     {
                         int newCost = CurCost + CurNeighbors.SingleOrDefault(i => i.Value.Equals(CurNeighbor)).Key;
                         if (CostNodes[CurNeighbor] > newCost)
                         {
-                            CostNodes[CurNeighbor] = newCost;
+                            CostNodes[CurNeighbor]   = newCost;
                             ParentNodes[CurNeighbor] = CurNode;
                         }
                     }
                     VerifiedNodes.Add(CurNode);
                     CurNode = findLowCostNode<T>(CostNodes, VerifiedNodes);
-
                 }
                 else break;
             }
 
-            Dictionary<int, List<T>> FullPath = new Dictionary<int, List<T>>();
             FullPath.Add(CostNodes[toElement], new List<T>());
             FullPath[CostNodes[toElement]].Add(toElement);
 
@@ -76,62 +70,74 @@ namespace Graph
         }
         private static T findLowCostNode<T>(Dictionary<T, int> CostNodes, List<T> VerifiedNodes)
         {
-            int LowCost = int.MaxValue;
+            int LowCost   = int.MaxValue;
             T LowCostNode = default;
             foreach (var CostNode in CostNodes)
             {
-                if (CostNode.Value != int.MaxValue)
+                if (CostNode.Value < LowCost && !VerifiedNodes.Contains(CostNode.Key))
                 {
-                    if (CostNode.Value < LowCost && !VerifiedNodes.Contains(CostNode.Key))
-                    {
-                        LowCost = CostNode.Value;
-                        LowCostNode = CostNode.Key;
-                    }
+                    LowCost     = CostNode.Value;
+                    LowCostNode = CostNode.Key;
                 }
             }
             return LowCostNode;
         }
 
 
-        public static string widthSearch(string MainItem, Graph<string> graph)
+        public static List<T> widthSearch<T>(T MainItem, T ToSearchItem, Graph<T> graph)
         {
-            if (graph.SelectNodes(MainItem) == null)
-            {
-                throw new Exception("Main element not found");
-            }
+            if (graph.SelectNodes(MainItem) == null)     throw new GraphException("Main element not found");
+            if (graph.SelectNodes(ToSearchItem) == null) throw new GraphException("ToSearch element not found");
+            if (MainItem.Equals(ToSearchItem))           return new List<T>() { MainItem };
 
-            List<string> searchedList = new List<string>();
+            List<T> searchedList         = new List<T>();
+            Queue<T> queue               = new Queue<T>();
+            Dictionary<T, T> ParentNodes = new Dictionary<T, T>();
+            List<T> FullPath = new List<T>();
 
-            Queue<string> queue = new Queue<string>();
-            foreach (string graphElement in graph.SelectNodes(MainItem))
-            {
-                queue.Enqueue(graphElement);
-            }
+            searchedList.Add(MainItem);
+            foreach (var Node in graph.SelectAll())           ParentNodes.Add(Node, default);
+            foreach (var Node in graph.SelectNodes(MainItem)) ParentNodes[Node] = MainItem;
+
+            foreach (T graphElement in graph.SelectNodes(MainItem)) queue.Enqueue(graphElement);
 
             while (queue.Count != 0)
             {
-                string queueItem = queue.Dequeue();
-
+                T queueItem = queue.Dequeue();
                 if (!searchedList.Contains(queueItem))
                 {
-                    if (searchValidator(queueItem)) return queueItem;
+                    if (searchValidator(queueItem, ToSearchItem)) break;
                     else
                     {
                         searchedList.Add(queueItem);
-                        foreach (string graphElement in graph.SelectNodes(queueItem))
+                        foreach (T graphElement in graph.SelectNodes(queueItem))
                         {
-                            queue.Enqueue(graphElement);
+                            if (!queue.Contains(graphElement) && !searchedList.Contains(graphElement))
+                            {
+                                queue.Enqueue(graphElement);
+                                ParentNodes[graphElement] = queueItem;
+                            }
                         }
                     }
                 }
             }
 
-            return "Not Found";
+            FullPath.Add(ToSearchItem);
+            T CurParent = ParentNodes[ToSearchItem];
+            while (!CurParent.Equals(MainItem))
+            {
+                FullPath.Add(CurParent);
+                CurParent = ParentNodes[CurParent];
+            }
+            FullPath.Add(MainItem);
+            FullPath.Reverse();
+
+            return FullPath;
         }
 
-        public static bool searchValidator(string SearchedItem)
+        public static bool searchValidator<T>(T SearchedItem, T ToSearchItem)
         {
-            return SearchedItem[0].Equals('J');
+            return SearchedItem.Equals(ToSearchItem);
         }
 
         static void Main(string[] args)
@@ -141,40 +147,40 @@ namespace Graph
                 Graph<String> graph = new Graph<string>();
 
                 Dictionary<String, List<String>> graphElements = new Dictionary<String, List<String>>();
-                graphElements["Me"] = new List<String>() { "Bob", "Klare", "Alice" };
-                graphElements["Bob"] = new List<String>() { "Anudzh", "Paggy" };
-                graphElements["Alice"] = new List<String>() { "Paggy" };
-                graphElements["Klare"] = new List<String>() { "Tom", "John" };
+                graphElements["Me"]     = new List<String>() { "Bob2", "Klare", "Alice" };
+                graphElements["Bob2"] = new List<String>() { "Bob" };
+                graphElements["Bob"]    = new List<String>() { "Anudzh", "Paggy" };
+                graphElements["Alice"]  = new List<String>() { "Paggy" };
+                graphElements["Klare"]  = new List<String>() { "Tom", "John" };
                 graphElements["Anudzh"] = new List<String>();
-                graphElements["Paggy"] = new List<String>();
-                graphElements["Tom"] = new List<String>();
-                graphElements["John"] = new List<String>();
+                graphElements["Paggy"]  = new List<String>();
+                graphElements["Tom"]    = new List<String>();
+                graphElements["John"]   = new List<String>();
 
+                foreach (var graphElement in graphElements) graph.InsertElement(graphElement.Key);
                 foreach (var graphElement in graphElements)
                 {
-                    graph.InsertElement(graphElement.Key);
-                }
-                foreach (var graphElement in graphElements)
-                {
-                    if (graphElement.Value.Count > 0)
-                    {
-                        graph.InsertNodes(graphElement.Key, graphElement.Value);
-                    }                    
+                    if (graphElement.Value.Count > 0) graph.InsertNodes(graphElement.Key, graphElement.Value);
                 }
 
                 foreach (var graphElement in graphElements)
                 {
                     List<String> Nodes = graph.SelectNodes(graphElement.Key);
                     Console.WriteLine($"For: {graphElement.Key}");
-                    foreach (String RelationEelement in Nodes)
-                    {
-                        Console.WriteLine($"{RelationEelement};");
-                    }
+                    foreach (String RelationEelement in Nodes) Console.WriteLine($"{RelationEelement};");
                 }
-                Console.WriteLine(widthSearch("Me", graph));
-                Console.WriteLine(graph.GetCount());
+
+                var FullPath = widthSearch<string>("Bob", "John", graph);
+                int TotalCost = FullPath.Count() - 1;
+                Console.WriteLine($"TotalCost: {TotalCost}");
+                foreach (var RouteNode in FullPath)
+                {
+                    Console.Write($"{RouteNode}");
+                    if (!RouteNode.Equals("John")) Console.Write($" ---> ");
+                }
+                Console.WriteLine();
             }
-            catch (Exception e)
+            catch (GraphException e)
             {
                 Console.WriteLine(e.ToString());
             }
@@ -207,10 +213,7 @@ namespace Graph
                 {
                     Dictionary<int, string> Nodes = wGraph.SelectNodes(wGraphElement.Key);
                     Console.WriteLine($"For: {wGraphElement.Key}");
-                    foreach (var RelationEelement in Nodes)
-                    {
-                        Console.WriteLine($"{wGraphElement.Key}---{RelationEelement.Key}min-->{RelationEelement.Value};");
-                    }
+                    foreach (var RelationEelement in Nodes) Console.WriteLine($"{wGraphElement.Key}---{RelationEelement.Key}min-->{RelationEelement.Value};");
                 }
 
                 var FullPath = DijkstraAlg<string>("TwinPicks", "GoldenGate", wGraph);
